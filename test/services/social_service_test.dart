@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:traffic_report_front_flutter/services/social_service.dart';
+import 'lib/services/social_service.dart';
 import 'package:traffic_report_front_flutter/models/social_account.dart';
 
 // Mock classes
@@ -49,7 +49,7 @@ void main() {
           ]),
           200));
 
-      expect(await SocialService.getAvailableProviders(),
+      expect(await socialService.getAvailableProviders(),
           isA<List<SocialProvider>>());
     });
 
@@ -60,7 +60,7 @@ void main() {
 
       SocialAccount account = SocialAccount(
           provider: 'Facebook', uid: '123e4567-e89b-12d3-a456-426614174000');
-      expect(await SocialService.disconnectAccount(account), isTrue);
+      expect(await socialService.disconnectAccount(account), isTrue);
     });
 
     test(
@@ -71,7 +71,7 @@ void main() {
       final mockUri = Uri.parse('https://example.com');
       when(canLaunchUrl(mockUri)).thenAnswer((_) async => false);
 
-      expect(() async => await SocialService.connectWithProvider(provider),
+      expect(() async => await socialService.connectWithProvider(provider),
           throwsA(isA<Exception>()));
     });
   });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'lib/components/custom_info_window_test.dart';
 
 class CustomInfoWindow extends StatelessWidget {
   final String license_plate;
@@ -11,7 +12,7 @@ class CustomInfoWindow extends StatelessWidget {
 
   const CustomInfoWindow({
     super.key,
-    required this.license_plate,
+    required this.licensePlate,
     required this.violation,
     required this.address,
     required this.date,
@@ -40,7 +41,7 @@ class CustomInfoWindow extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('車牌: $license_plate', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('車牌: $licensePlate', style: const TextStyle(fontWeight: FontWeight.bold)),
           Text('違規項目: $violation',style: const TextStyle(fontWeight: FontWeight.bold)),
           Text('地點: $address',style: const TextStyle(fontWeight: FontWeight.bold)),
           Text('日期: $date',style: const TextStyle(fontWeight: FontWeight.bold)),

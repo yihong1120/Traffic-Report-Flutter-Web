@@ -25,7 +25,7 @@ class MapService {
         var lng = markerData['lng'];
         var license_plate = markerData['license_plate'];
         var violation = markerData['violation'];
-        var traffic_violation_id = markerData['traffic_violation_id'];
+        
 
         if (lat == null || lng == null) {
           debugPrint('Error: latitude or longitude is null.');

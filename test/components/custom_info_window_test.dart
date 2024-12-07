@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'lib/components/custom_info_window.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:traffic_report_front_flutter/components/custom_info_window.dart';
 
