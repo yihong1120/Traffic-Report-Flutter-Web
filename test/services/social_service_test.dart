@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:traffic_report_front_flutter/services/social_service.dart';
+import 'package:traffic_report_front_flutter/models/social_provider.dart';
+import 'package:traffic_report_front_flutter/models/social_account.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +14,7 @@ import 'package:traffic_report_front_flutter/models/social_account.dart';
 class MockClient extends Mock implements http.Client {}
 
 void main() {
+  // Add unit tests for SocialService methods
   group('SocialService', () {
     late http.Client client;
     late SocialService socialService;
@@ -19,6 +23,7 @@ void main() {
       client = MockClient();
       socialService = SocialService(client: client);
       TestWidgetsFlutterBinding.ensureInitialized();
+      await dotenv.load(fileName: '.env');
       await dotenv.load(fileName: ".env");
     });
 
@@ -37,6 +42,14 @@ void main() {
           ]),
           200));
 
+      final mockUri = Uri.parse('http://localhost:8000/accounts/api/social-connections');
+      when(client.get(mockUri)).thenAnswer((_) async => http.Response(
+          json.encode([
+            {'provider': 'Facebook', 'uid': '123e4567-e89b-12d3-a456-426614174000'},
+            {'provider': 'Twitter', 'uid': '123e4567-e89b-12d3-a456-426614174001'}
+          ]),
+          200));
+
       expect(await socialService.getConnectedAccounts(),
           isA<List<SocialAccount>>());
     });
@@ -49,7 +62,14 @@ void main() {
           ]),
           200));
 
-      expect(await SocialService.getAvailableProviders(),
+      when(client.get(isA<Uri>() as Uri)).thenAnswer((_) async => http.Response(
+          json.encode([
+            {'id': '123e4567-e89b-12d3-a456-426614174002', 'name': 'Facebook'},
+            {'id': '123e4567-e89b-12d3-a456-426614174003', 'name': 'Twitter'}
+          ]),
+          200));
+
+      expect(await socialService.getAvailableProviders(),
           isA<List<SocialProvider>>());
     });
 
@@ -60,7 +80,10 @@ void main() {
 
       SocialAccount account = SocialAccount(
           provider: 'Facebook', uid: '123e4567-e89b-12d3-a456-426614174000');
-      expect(await SocialService.disconnectAccount(account), isTrue);
+      when(client.post(isA as Uri, body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response('', 200));
+
+      expect(await socialService.disconnectAccount(account), isTrue);
     });
 
     test(
@@ -71,7 +94,10 @@ void main() {
       final mockUri = Uri.parse('https://example.com');
       when(canLaunchUrl(mockUri)).thenAnswer((_) async => false);
 
-      expect(() async => await SocialService.connectWithProvider(provider),
+      final mockUri = Uri.parse('http://localhost:8000/accounts/api/social/login/123e4567-e89b-12d3-a456-426614174004');
+      when(canLaunch(mockUri.toString())).thenAnswer((_) async => false);
+
+      expect(() async => await socialService.connectWithProvider(provider),
           throwsA(isA<Exception>()));
     });
   });
